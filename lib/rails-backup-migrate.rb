@@ -115,8 +115,8 @@ module RailsBackupMigrate
             records.map! do |record|
               record.inject({}) do |memo, (k,v)|
                 memo[k] = case v
-                            when Mysql::Time
-                              datetime_from_mysql_time v
+                            when Time
+                              v.to_s(:db)
                             else
                               v
                           end
@@ -154,15 +154,6 @@ module RailsBackupMigrate
       # in ruby 1.9.3, `Rails.root` is a Pathname object, that plays mess with string comparisons
       # so we'll ensure we have a string
       Rails.root.to_s
-    end
-
-    private
-
-    def datetime_from_mysql_time(mysql_time)
-        year = mysql_time.year
-        month = [1,mysql_time.month].max
-        day = [1,mysql_time.day].max
-        DateTime.new year, month, day, mysql_time.hour, mysql_time.minute, mysql_time.second
     end
 
   end
